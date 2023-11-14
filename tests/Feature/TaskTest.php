@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Task;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\TestCase;
@@ -13,7 +14,8 @@ class TaskTest extends TestCase
 
     public function test_task_index(): void
     {
-        $tasks = Task::factory()->count(3)->create();
+        $user = User::factory()->create();
+        $tasks = Task::factory()->count(3)->for($user)->create();
 
         $first = $tasks->get(0);
 
@@ -35,7 +37,18 @@ class TaskTest extends TestCase
     public function test_task_store(): void
     {
         $data = Task::factory()->make();
-        $this->post("/tasks", $data->toArray());
+        $response = $this->post("/tasks", $data->toArray());
+
+        $response
+            ->assertStatus(200)
+            ->assertJson(fn (AssertableJson $json) =>
+                $json
+                    ->has("task", fn (AssertableJson $json) =>
+                        $json
+                            ->where("title", $data->title)
+                            ->etc()
+                    )
+            );
 
         $task = Task::where("title", $data->title)->first();
 
@@ -45,13 +58,25 @@ class TaskTest extends TestCase
 
     public function test_task_put(): void
     {
-        $task = Task::factory()->create();
+        $user = User::factory()->create();
+        $task = Task::factory()->for($user)->create();
 
         $data = [
             "title" => fake()->sentence()
         ];
 
-        $this->put("/tasks/{$task->id}", $data);
+        $response = $this->put("/tasks/{$task->id}", $data);
+
+        $response
+            ->assertStatus(200)
+            ->assertJson(fn (AssertableJson $json) =>
+                $json
+                    ->has("task", fn (AssertableJson $json) =>
+                        $json
+                            ->where("title", $data["title"])
+                            ->etc()
+                    )
+            );
 
         $newTask = Task::find($task->id);
 
@@ -59,11 +84,15 @@ class TaskTest extends TestCase
         $this->assertEquals($task->description, $newTask->description);
     }
 
+
     public function test_task_removal(): void
     {
-        $task = Task::factory()->create();
+        $user = User::factory()->create();
+        $task = Task::factory()->for($user)->create();
 
-        $this->delete("/tasks/{$task->id}");
+        $response = $this->delete("/tasks/{$task->id}");
+
+        $response->assertStatus(200);
 
         $this->assertDatabaseMissing("tasks", [
             "id" => $task->id
