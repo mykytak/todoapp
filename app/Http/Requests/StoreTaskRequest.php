@@ -6,6 +6,11 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class StoreTaskRequest extends FormRequest
 {
+    public static $messages = [
+        "title.required" => "Title is required",
+        "user_id.required" => "You have to log in first"
+    ];
+
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -22,7 +27,13 @@ class StoreTaskRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            "title" => "required",
+            "user_id" => "required"
         ];
+    }
+
+    public function messages(): array
+    {
+        return self::$messages;
     }
 }

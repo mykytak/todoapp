@@ -27,7 +27,7 @@ class TaskController extends Controller
     public function store(StoreTaskRequest $request): JsonResponse
     {
         $task = new Task;
-        $task->fill($request->all());
+        $task->fill($request->validated());
         $user = User::find($request->user_id);
         $task->user()->associate($user);
         $task->save();

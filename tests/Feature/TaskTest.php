@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Http\Requests\StoreTaskRequest;
+use App\Http\Requests\UpdateTaskRequest;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -97,6 +99,39 @@ class TaskTest extends TestCase
         $this->assertDatabaseMissing("tasks", [
             "id" => $task->id
         ]);
+    }
+
+    public function test_create_task_errors(): void
+    {
+        $messages = StoreTaskRequest::$messages;
+
+        $response = $this->postJson("/tasks", []);
+        $response
+            ->assertStatus(422)
+            ->assertJson(fn (AssertableJson $json) =>
+                $json
+                    ->where("errors.title.0", $messages["title.required"])
+                    ->where("errors.user_id.0", $messages["user_id.required"])
+                    ->etc()
+            );
+    }
+
+    public function test_update_task_errors(): void
+    {
+        $messages = UpdateTaskRequest::$messages;
+
+        $user = User::factory()->create();
+        $task = Task::factory()->for($user)->create();
+
+        $response = $this->putJson("/tasks/{$task->id}", []);
+        $response
+            ->assertStatus(422)
+            ->assertJson(fn (AssertableJson $json) =>
+                $json
+                    ->where("errors.keys.0", $messages["keys.required_without_all"])
+                    ->where("errors.user_id.0", $messages["user_id.required"])
+                    ->etc()
+            );
     }
 }
 
