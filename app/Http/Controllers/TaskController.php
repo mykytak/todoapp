@@ -7,18 +7,22 @@ use App\Http\Requests\UpdateTaskRequest;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class TaskController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(): JsonResponse
+    public function index(Request $request): View|JsonResponse
     {
         $tasks = Task::all();
 
-        return response()->json(["tasks" => $tasks]);
+        return $request->expectsJson()
+            ? response()->json(["tasks" => $tasks])
+            : view("tasks", ["tasks" => $tasks])
+            ;
     }
 
     /**

@@ -6,14 +6,13 @@ services:
             args:
                 WWWGROUP: '${WWWGROUP}'
         image: sail-8.2/app
-        extra_hosts:
-            - 'host.docker.internal:host-gateway'
+        # extra_hosts:
+        #     - 'host.docker.internal:host-gateway'
         # ports:
         #     - '${APP_PORT:-80}:80'
         #     - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
         expose:
             - 80
-            - 8000
         environment:
             WWWUSER: '${WWWUSER}'
             LARAVEL_SAIL: 1
@@ -23,7 +22,9 @@ services:
         volumes:
             - '.:/var/www/html'
         networks:
-            - traefik
+          traefik:
+            aliases:
+              - "todoapp.local"
         depends_on:
             - mysql
             # - selenium
@@ -32,6 +33,38 @@ services:
             - "traefik.http.routers.todoapp.entrypoints=web"
             - "traefik.http.routers.todoapp.rule=Host(`todoapp.local`)"
             - "traefik.http.services.todoapp.loadbalancer.server.port=80"
+
+    vite:
+        build:
+            context: ./vendor/laravel/sail/runtimes/8.2
+            dockerfile: Dockerfile
+            args:
+                WWWGROUP: '${WWWGROUP}'
+        image: sail-8.2/app
+        # ports:
+        #     - '${APP_PORT:-80}:80'
+        #     - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
+        expose:
+            - 8000
+        environment:
+            WWWUSER: '${WWWUSER}'
+            LARAVEL_SAIL: 1
+            IGNITION_LOCAL_SITES_PATH: '${PWD}'
+        volumes:
+            - '.:/var/www/html'
+        networks:
+          traefik:
+            aliases:
+              - "vite.todoapp.local"
+        depends_on:
+            - mysql
+            # - selenium
+        command: "npm run dev"
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.vite-todoapp.entrypoints=web"
+            - "traefik.http.routers.vite-todoapp.rule=Host(`vite.todoapp.local`)"
+            - "traefik.http.services.vite-todoapp.loadbalancer.server.port=8000"
 
     mysql:
         image: 'mysql/mysql-server:8.0'
