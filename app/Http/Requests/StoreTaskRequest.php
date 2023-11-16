@@ -8,7 +8,7 @@ class StoreTaskRequest extends FormRequest
 {
     public static $messages = [
         "title.required" => "Title is required",
-        "user_id.required" => "You have to log in first"
+        /* "user_id.required" => "You have to log in first" */
     ];
 
     /**
@@ -28,7 +28,9 @@ class StoreTaskRequest extends FormRequest
     {
         return [
             "title" => "required",
-            "user_id" => "required"
+            "description" => "string",
+            "completed" => "boolean",
+            "user_id" => "number",
         ];
     }
 

@@ -111,7 +111,6 @@ class TaskTest extends TestCase
             ->assertJson(fn (AssertableJson $json) =>
                 $json
                     ->where("errors.title.0", $messages["title.required"])
-                    ->where("errors.user_id.0", $messages["user_id.required"])
                     ->etc()
             );
     }
@@ -129,7 +128,6 @@ class TaskTest extends TestCase
             ->assertJson(fn (AssertableJson $json) =>
                 $json
                     ->where("errors.keys.0", $messages["keys.required_without_all"])
-                    ->where("errors.user_id.0", $messages["user_id.required"])
                     ->etc()
             );
     }

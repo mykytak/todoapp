@@ -16,7 +16,7 @@
 
 <template>
   <div class="backdrop"></div>
-  <div class="task-edit">
+  <div class="task-edit" v-if="task">
     <form>
       <label for="title" :class="{withErrors: errors && errors.title}">
         <input v-model="task.title" name="title"/>

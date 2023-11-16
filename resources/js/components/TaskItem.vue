@@ -1,7 +1,7 @@
 <script setup>
   import { ref } from "vue";
 
-  const { task } = defineProps({
+  const props = defineProps({
     task: Object
   });
 
@@ -10,45 +10,49 @@
   const showDetails = ref(false);
   const toggleMore = () => showDetails.value = !showDetails.value;
 
-  const markForEdit = () => emit("edit", task.id);
-  const markForCompletion = () => emit("complete", task.id);
-  const markForUncompletion = () => emit("uncomplete", task.id);
-  const markForRemoval = () => emit("delete", task.id);
+  const markForEdit = () => emit("edit", props.task.id);
+  const markForCompletion = () => emit("complete", props.task.id);
+  const markForUncompletion = () => emit("uncomplete", props.task.id);
+  const markForRemoval = () => emit("delete", props.task.id);
 </script>
 
 <template>
-  <div class="task-item">
+  <div
+      class="task-item"
+      :class="{completed: task.completed}"
+      :data-test-id="task.id"
+    >
     <div class="head" @click="toggleMore">
       <div class="title">
         <i
             class="more fa-solid fa-chevron-up cursor-pointer"
             :class="{active: showDetails}"
           ></i>
-        {{ task.title }}
+        {{ props.task.title }}
       </div>
       <div class="actions">
         <a class="edit"
-           @click.prevent="markForEdit"
+           @click.prevent.stop="markForEdit"
            href="javascript:void(0)"
            >
            <i class="fa-regular fa-pen-to-square"></i>
         </a>
         <a class="complete"
-           v-if="!task.completed"
-           @click.prevent="markForCompletion"
+           v-if="!props.task.completed"
+           @click.prevent.stop="markForCompletion"
            href="javascript:void(0)"
            >
            <i class="fa-solid fa-check"></i>
         </a>
         <a class="uncomplete"
-           v-if="task.completed"
-           @click.prevent="markForUncompletion"
+           v-if="props.task.completed"
+           @click.prevent.stop="markForUncompletion"
            href="javascript:void(0)"
            >
            <i class="fa-regular fa-circle-xmark"></i>
         </a>
         <a class="delete"
-           @click.prevent="markForRemoval"
+           @click.prevent.stop="markForRemoval"
            href="javascript:void(0)"
            >
            <i class="fa-solid fa-trash-can"></i>
@@ -57,7 +61,7 @@
     </div>
 
     <div v-if="showDetails" class="details">
-      {{ task.description }}
+      {{ props.task.description }}
     </div>
   </div>
 </template>
@@ -66,6 +70,9 @@
 .task-item {
   .head {
     @apply flex gap-1 p-2 hover:bg-stone-300;
+  }
+  &.completed .head {
+    @apply bg-emerald-200 hover:bg-emerald-300;
   }
 
   .more{

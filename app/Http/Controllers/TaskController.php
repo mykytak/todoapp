@@ -8,6 +8,7 @@ use App\Models\Task;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class TaskController extends Controller
@@ -30,9 +31,12 @@ class TaskController extends Controller
      */
     public function store(StoreTaskRequest $request): JsonResponse
     {
+        /* $user_id = $request->has("user_id") */
+        /*     ? $request->user_id : Auth::user()->id; */
+        $user_id = 1;
         $task = new Task;
         $task->fill($request->validated());
-        $user = User::find($request->user_id);
+        $user = User::find($user_id);
         $task->user()->associate($user);
         $task->save();
 

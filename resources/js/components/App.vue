@@ -1,22 +1,13 @@
 <script setup>
-  import TaskItem from "./TaskItem.vue";
-  import TaskEdit from "./TaskEdit.vue";
+  import TaskPage from "./TaskPage.vue";
+  import { setCsrf } from "../api/tasks";
 
-  const task = {
-    id: 1,
-    title: 'test task',
-    description: 'description'
-  };
+  const csrf = document.head.querySelector("meta[name=csrf]").content;
+  setCsrf(csrf);
 </script>
 
 <template>
-    <div class="font-bold">Tasks page</div>
-    <TaskItem
-        :task="task"
-        @edit="(taskId) => console.log('marked for editing', taskId)"
-    />
-    <TaskEdit
-        :task="task"
-        />
+  <TaskPage />
 </template>
+
 
