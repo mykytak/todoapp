@@ -5,7 +5,6 @@ namespace Tests\Feature;
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 use App\Models\Task;
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\TestCase;
@@ -16,12 +15,11 @@ class TaskTest extends TestCase
 
     public function test_task_index(): void
     {
-        $user = User::factory()->create();
-        $tasks = Task::factory()->count(3)->for($user)->create();
+        $tasks = Task::factory()->count(3)->create();
 
         $first = $tasks->get(0);
 
-        $response = $this->get("/tasks");
+        $response = $this->getJson("/tasks");
 
         $response
             ->assertStatus(200)
@@ -60,8 +58,7 @@ class TaskTest extends TestCase
 
     public function test_task_put(): void
     {
-        $user = User::factory()->create();
-        $task = Task::factory()->for($user)->create();
+        $task = Task::factory()->create();
 
         $data = [
             "title" => fake()->sentence()
@@ -89,8 +86,7 @@ class TaskTest extends TestCase
 
     public function test_task_removal(): void
     {
-        $user = User::factory()->create();
-        $task = Task::factory()->for($user)->create();
+        $task = Task::factory()->create();
 
         $response = $this->delete("/tasks/{$task->id}");
 
@@ -119,8 +115,7 @@ class TaskTest extends TestCase
     {
         $messages = UpdateTaskRequest::$messages;
 
-        $user = User::factory()->create();
-        $task = Task::factory()->for($user)->create();
+        $task = Task::factory()->create();
 
         $response = $this->putJson("/tasks/{$task->id}", []);
         $response
