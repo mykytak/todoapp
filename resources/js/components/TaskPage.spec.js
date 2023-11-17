@@ -86,6 +86,40 @@ describe("TaskPage", async () => {
         );
     });
 
+    it("shows errors for new tasks", async () => {
+        mockReturnValue = {
+            "message":"Title is required (and 1 more error)",
+            "errors": {
+                "title":["Title is required"],
+            }
+        };
+
+        await wrapper.find(".new-task").trigger("click");
+        await wrapper.find("[name=title]").setValue("");
+        await wrapper.find("[name=description]").setValue("");
+        await wrapper.find(".save").trigger("click");
+
+        await flushPromises();
+
+        expect(wrapper.find(".task-edit").text()).toContain("Title is required");
+    });
+
+    it("shows errors for edited tasks", async () => {
+        mockReturnValue = {
+            "message":"Title is required (and 1 more error)",
+            "errors": {
+                "title":["Title is required"],
+            }
+        };
+
+        await wrapper.find(`[data-test-id=${completedTask.id}] .edit`).trigger("click");
+        await wrapper.find("[name=title]").setValue("");
+        await wrapper.find(".save").trigger("click");
+        await flushPromises();
+
+        expect(wrapper.find(".task-edit").text()).toContain("Title is required");
+    });
+
     it("edit tasks", async () => {
         const changedTitle = "changed title";
         const modifiedTask = {
@@ -110,6 +144,9 @@ describe("TaskPage", async () => {
                 headers
             }
         );
+
+        await flushPromises();
+
         expect(wrapper.text()).toContain(changedTitle);
 
     });

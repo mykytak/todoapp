@@ -32,7 +32,13 @@ const taskAPI = {
             }),
             headers
         });
-        return response.json();
+
+        const res = await response.json();
+        if (res.errors) {
+            throw res.errors;
+        }
+
+        return res;
     },
     put: async (id, data) => {
         const response = await fetch(`${getBaseURL()}/tasks/${id}`, {
@@ -43,7 +49,13 @@ const taskAPI = {
             }),
             headers
         });
-        return response.json();
+
+        const res = await response.json();
+        if (res.errors) {
+            throw res.errors;
+        }
+
+        return res;
     },
     delete: async (id) => {
         const response = await fetch(`${getBaseURL()}/tasks/${id}`, {

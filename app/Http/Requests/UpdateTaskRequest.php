@@ -26,7 +26,8 @@ class UpdateTaskRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "keys" => "required_without_all:title,description,completed"
+            "keys" => "required_without_all:title,description,completed",
+            "title" => "required"
         ];
     }
 

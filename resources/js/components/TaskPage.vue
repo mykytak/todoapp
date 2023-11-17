@@ -1,6 +1,6 @@
 <script setup>
-  import { ref, reactive } from "vue";
-  import { useTaskAPI, setCsrf } from "../api/tasks";
+  import { ref, reactive, toRefs, toRaw } from "vue";
+  import { useTaskAPI } from "../api/tasks";
 
   import TaskItem from "./TaskItem.vue";
   import TaskEdit from "./TaskEdit.vue";
@@ -15,8 +15,12 @@
   const tasks = reactive([]);
   const taskForEdit = ref({});
 
+  const errors = ref({});
   const editorShows = ref(false);
-  const enterEditMode = () => editorShows.value = true;
+  const enterEditMode = () => {
+    errors.value = {};
+    editorShows.value = true;
+  }
   const exitEditMode  = () => editorShows.value = false;
 
   const createNewTask = () => {
@@ -25,7 +29,7 @@
   }
 
   const startTaskEditing = (task) => {
-    taskForEdit.value = task;
+    taskForEdit.value = structuredClone(toRaw(task));
     enterEditMode();
   };
 
@@ -56,6 +60,9 @@
         const index = tasks.findIndex((old) => old.id == task.id);
         tasks.splice(index, isEdit ? 1 : 0, data.task)
         exitEditMode();
+      })
+      .catch(err => {
+        errors.value = err;
       });
   }
 
@@ -106,6 +113,7 @@
   <TaskEdit
       v-if="editorShows"
       :task="taskForEdit"
+      :errors="errors"
 
       @updated="saveTask"
       @cancel="exitEditMode"

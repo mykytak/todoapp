@@ -71,8 +71,14 @@
   .head {
     @apply flex gap-1 hover:bg-stone-300;
   }
-  &.completed .head {
-    @apply p-2 bg-emerald-200 hover:bg-emerald-300;
+  &.completed {
+    .head {
+      @apply bg-emerald-200 hover:bg-emerald-300;
+    }
+
+    .actions > * {
+      @apply hover:bg-emerald-400;
+    }
   }
 
   .more{
