@@ -69,10 +69,10 @@
 <style lang="postcss" scoped>
 .task-item {
   .head {
-    @apply flex gap-1 p-2 hover:bg-stone-300;
+    @apply flex gap-1 hover:bg-stone-300;
   }
   &.completed .head {
-    @apply bg-emerald-200 hover:bg-emerald-300;
+    @apply p-2 bg-emerald-200 hover:bg-emerald-300;
   }
 
   .more{
@@ -85,7 +85,12 @@
   }
 
   .actions {
-    @apply ml-auto flex gap-1;
+    @apply ml-auto flex divide-x divide-neutral-500;
+
+    &>* {
+      @apply w-8 h-8 text-center hover:bg-stone-400
+        flex justify-center items-center;
+    }
   }
 }
 </style>

@@ -77,24 +77,29 @@
 </script>
 
 <template>
+
+
   <div class="tasks-container">
-    <button class="new-task" @click="createNewTask">
-      New task
-    </button>
-    <template v-if="tasks.length">
-      <template v-for="task in tasks" :key="task.id">
-        <TaskItem
-            :task="task"
-            @edit="startTaskEditing(task)"
-            @complete="completeTask(task)"
-            @uncomplete="uncompleteTask(task)"
-            @delete="deleteTask"
-          />
+    <div class="container">
+      <template v-if="tasks.length">
+        <template v-for="task in tasks" :key="task.id">
+          <TaskItem
+              :task="task"
+              @edit="startTaskEditing(task)"
+              @complete="completeTask(task)"
+              @uncomplete="uncompleteTask(task)"
+              @delete="deleteTask"
+              />
+        </template>
       </template>
-    </template>
-    <template v-else>
-      No tasks found
-    </template>
+      <template v-else>
+        No tasks found
+      </template>
+
+      <button class="new-task" @click="createNewTask">
+        <i class="fa-solid fa-circle-plus"></i>
+      </button>
+    </div>
   </div>
 
 
@@ -106,4 +111,28 @@
       @cancel="exitEditMode"
       />
 </template>
+
+<style lang="postcss" scoped>
+
+.tasks-container {
+  @apply flex flex-col justify-center items-center min-h-screen;
+
+  .container {
+    @apply relative flex flex-col divide-y divide-neutral-400
+      m-auto
+      h-screen max-w-screen-sm sm:max-h-[640px]
+      rounded bg-neutral-100
+    ;
+
+    .new-task {
+      @apply
+        text-white text-2xl w-screen fixed bottom-0 left-0 right-0 h-12 bg-green-600 hover:bg-green-800
+        sm:absolute sm:w-full
+      ;
+      /* text-green-600 hover:text-green-800 */
+    }
+  }
+}
+</style>
+
 
