@@ -1,4 +1,6 @@
-let baseURL = "http://todoapp.local:8000";
+// let baseURL = "http://todoapp.local:8000";
+
+let baseURL = "";
 
 const headers = {
   "Accept": "application/json",

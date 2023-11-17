@@ -28,7 +28,7 @@ class StoreTaskRequest extends FormRequest
     {
         return [
             "title" => "required",
-            "description" => "string",
+            "description" => "nullable|string",
             "completed" => "boolean",
             "user_id" => "number",
         ];
