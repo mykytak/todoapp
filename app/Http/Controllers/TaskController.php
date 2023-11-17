@@ -33,11 +33,10 @@ class TaskController extends Controller
     {
         /* $user_id = $request->has("user_id") */
         /*     ? $request->user_id : Auth::user()->id; */
-        $user_id = 1;
         $task = new Task;
         $task->fill($request->validated());
-        $user = User::find($user_id);
-        $task->user()->associate($user);
+        /* $user = User::find($user_id); */
+        /* $task->user()->associate($user); */
         $task->save();
 
         return response()->json(["task" => $task]);
